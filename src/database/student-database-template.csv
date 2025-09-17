@@ -1,0 +1,4 @@
+StudentID,FirstName,LastName,DateOfBirth,Gender,Email,Phone,EmergencyContact,Course,AcademicYear,PreviousEducation,HostelRequired,HostelType,SpecialRequirements,SubmissionDate,Status,FeeStatus,HostelAllocation,ExaminationRecords,Notes
+STU2401CS0001,John,Doe,2000-05-15,Male,john.doe@email.com,+1234567890,+1234567891,Computer Science,2024-25,Bachelor in Mathematics,Yes,Single Room,None,2024-01-15,Pending Review,Pending,Pending,Not Available,New admission
+STU2401BA0002,Jane,Smith,1999-08-22,Female,jane.smith@email.com,+1234567892,+1234567893,Business Administration,2024-25,Bachelor in Commerce,No,,None,2024-01-16,Approved,Paid,Not Required,Available,Approved for admission
+STU2401EN0003,Mike,Johnson,2001-03-10,Male,mike.johnson@email.com,+1234567894,+1234567895,Engineering,2024-25,High School Diploma,Yes,Double Room,Wheelchair accessible,2024-01-17,Pending Review,Pending,Pending,Not Available,Special accommodation required
