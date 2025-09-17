@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrative Dashboard - College ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .dashboard-card.students {
+            border-left-color: #4285f4;
+        }
+        
+        .dashboard-card.finance {
+            border-left-color: #34a853;
+        }
+        
+        .dashboard-card.hostel {
+            border-left-color: #ea4335;
+        }
+        
+        .dashboard-card.examinations {
+            border-left-color: #fbbc04;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            font-size: 2.5em;
+            margin-right: 15px;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .card-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #34a853 0%, #2d8f47 100%);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ea4335 0%, #d33b2c 100%);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #fbbc04 0%, #f9ab00 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .recent-activities {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .activities-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .activities-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+        
+        .activity-icon.student {
+            background: #e3f2fd;
+            color: #4285f4;
+        }
+        
+        .activity-icon.finance {
+            background: #e8f5e8;
+            color: #34a853;
+        }
+        
+        .activity-icon.hostel {
+            background: #ffebee;
+            color: #ea4335;
+        }
+        
+        .activity-icon.exam {
+            background: #fffbf0;
+            color: #fbbc04;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .activity-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .activity-time {
+            color: #999;
+            font-size: 0.8em;
+        }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .quick-actions {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .quick-actions-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .action-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .action-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .action-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .action-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #34a853;
+        }
+        
+        .status-offline {
+            background: #ea4335;
+        }
+        
+        .status-warning {
+            background: #fbbc04;
+        }
+        
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+            color: white;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(66, 133, 244, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(66, 133, 244, 0.4);
+        }
+        
+        .refresh-btn:active {
+            transform: rotate(180deg);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .card-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Administrative Dashboard</h1>
+            <p>Real-time overview of institutional operations</p>
+            <div style="margin-top: 15px;">
+                <span class="status-indicator status-online"></span>
+                <span>System Online</span>
+                <span style="margin-left: 20px;">Last Updated: <span id="lastUpdated">-</span></span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Main Dashboard Cards -->
+            <div class="dashboard-grid">
+                <!-- Students Card -->
+                <div class="dashboard-card students">
+                    <div class="card-header">
+                        <div class="card-icon">🎓</div>
+                        <div class="card-title">Student Management</div>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalStudents">0</div>
+                            <div class="stat-label">Total Students</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="newApplications">0</div>
+                            <div class="stat-label">New Applications</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="approvedStudents">0</div>
+                            <div class="stat-label">Approved</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="pendingReviews">0</div>
+                            <div class="stat-label">Pending Review</div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn btn-primary" onclick="viewStudents()">View All Students</a>
+                        <a href="#" class="btn btn-success" onclick="processApplications()">Process Applications</a>
+                    </div>
+                </div>
+                
+                <!-- Finance Card -->
+                <div class="dashboard-card finance">
+                    <div class="card-header">
+                        <div class="card-icon">💰</div>
+                        <div class="card-title">Financial Management</div>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalFeeDue">₹0</div>
+                            <div class="stat-label">Total Fee Due</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="paidAmount">₹0</div>
+                            <div class="stat-label">Paid Amount</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="pendingAmount">₹0</div>
+                            <div class="stat-label">Pending Amount</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="overdueAmount">₹0</div>
+                            <div class="stat-label">Overdue Amount</div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn btn-primary" onclick="viewFinance()">View Finance</a>
+                        <a href="#" class="btn btn-success" onclick="generateReceipts()">Generate Receipts</a>
+                    </div>
+                </div>
+                
+                <!-- Hostel Card -->
+                <div class="dashboard-card hostel">
+                    <div class="card-header">
+                        <div class="card-icon">🏠</div>
+                        <div class="card-title">Hostel Management</div>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalCapacity">0</div>
+                            <div class="stat-label">Total Capacity</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="occupiedRooms">0</div>
+                            <div class="stat-label">Occupied</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="availableRooms">0</div>
+                            <div class="stat-label">Available</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="occupancyRate">0%</div>
+                            <div class="stat-label">Occupancy Rate</div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn btn-primary" onclick="viewHostel()">View Hostel</a>
+                        <a href="#" class="btn btn-warning" onclick="allocateRooms()">Allocate Rooms</a>
+                    </div>
+                </div>
+                
+                <!-- Examinations Card -->
+                <div class="dashboard-card examinations">
+                    <div class="card-header">
+                        <div class="card-icon">📚</div>
+                        <div class="card-title">Examination Records</div>
+                    </div>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalExams">0</div>
+                            <div class="stat-label">Total Exams</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="completedExams">0</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="pendingExams">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="averageScore">0%</div>
+                            <div class="stat-label">Average Score</div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <a href="#" class="btn btn-primary" onclick="viewExaminations()">View Exams</a>
+                        <a href="#" class="btn btn-success" onclick="generateTranscripts()">Generate Transcripts</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activities -->
+            <div class="recent-activities">
+                <div class="activities-header">
+                    <div class="activities-title">🕒 Recent Activities</div>
+                </div>
+                <div id="recentActivities">
+                    <!-- Recent activities will be populated here -->
+                </div>
+            </div>
+            
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-card">
+                    <div class="chart-title">📈 Student Enrollment Trend</div>
+                    <div class="chart-placeholder">
+                        📊 Interactive Chart: Monthly student enrollment over the past 12 months
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-title">💰 Fee Collection Status</div>
+                    <div class="chart-placeholder">
+                        📊 Interactive Chart: Fee collection breakdown by status and month
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-title">🏠 Hostel Occupancy</div>
+                    <div class="chart-placeholder">
+                        📊 Interactive Chart: Hostel occupancy by block and room type
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-title">📚 Academic Performance</div>
+                    <div class="chart-placeholder">
+                        📊 Interactive Chart: Grade distribution and pass rates by course
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-actions-title">⚡ Quick Actions</div>
+                <div class="actions-grid">
+                    <div class="action-item" onclick="quickAction('admission')">
+                        <div class="action-icon">📝</div>
+                        <div class="action-title">Process Admission</div>
+                        <div class="action-description">Review and approve new applications</div>
+                    </div>
+                    
+                    <div class="action-item" onclick="quickAction('fee')">
+                        <div class="action-icon">💳</div>
+                        <div class="action-title">Collect Fees</div>
+                        <div class="action-description">Process fee payments and generate receipts</div>
+                    </div>
+                    
+                    <div class="action-item" onclick="quickAction('hostel')">
+                        <div class="action-icon">🏠</div>
+                        <div class="action-title">Allocate Hostel</div>
+                        <div class="action-description">Assign rooms to students</div>
+                    </div>
+                    
+                    <div class="action-item" onclick="quickAction('exam')">
+                        <div class="action-icon">📋</div>
+                        <div class="action-title">Schedule Exam</div>
+                        <div class="action-description">Create and manage examination schedules</div>
+                    </div>
+                    
+                    <div class="action-item" onclick="quickAction('report')">
+                        <div class="action-icon">📊</div>
+                        <div class="action-title">Generate Report</div>
+                        <div class="action-description">Create institutional reports</div>
+                    </div>
+                    
+                    <div class="action-item" onclick="quickAction('notification')">
+                        <div class="action-icon">🔔</div>
+                        <div class="action-title">Send Notification</div>
+                        <div class="action-description">Send announcements to students</div>
+                    </div>
+                    
+                    <div class="action-item" onclick="quickAction('backup')">
+                        <div class="action-icon">💾</div>
+                        <div class="action-title">Backup Data</div>
+                        <div class="action-description">Create system backup</div>
+                    </div>
+                    
+                    <div class="action-item" onclick="quickAction('settings')">
+                        <div class="action-icon">⚙️</div>
+                        <div class="action-title">System Settings</div>
+                        <div class="action-description">Configure system parameters</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Refresh Button -->
+    <button class="refresh-btn" onclick="refreshDashboard()" title="Refresh Dashboard">
+        🔄
+    </button>
+    
+    <script>
+        // Dashboard data
+        let dashboardData = {
+            students: {
+                total: 0,
+                newApplications: 0,
+                approved: 0,
+                pending: 0
+            },
+            finance: {
+                totalDue: 0,
+                paid: 0,
+                pending: 0,
+                overdue: 0
+            },
+            hostel: {
+                capacity: 0,
+                occupied: 0,
+                available: 0,
+                occupancyRate: 0
+            },
+            examinations: {
+                total: 0,
+                completed: 0,
+                pending: 0,
+                averageScore: 0
+            }
+        };
+        
+        // Load dashboard data
+        function loadDashboardData() {
+            // Simulate API call to get real-time data
+            setTimeout(() => {
+                dashboardData = {
+                    students: {
+                        total: 1250,
+                        newApplications: 45,
+                        approved: 1180,
+                        pending: 25
+                    },
+                    finance: {
+                        totalDue: 2500000,
+                        paid: 1800000,
+                        pending: 500000,
+                        overdue: 200000
+                    },
+                    hostel: {
+                        capacity: 500,
+                        occupied: 350,
+                        available: 150,
+                        occupancyRate: 70
+                    },
+                    examinations: {
+                        total: 1250,
+                        completed: 1000,
+                        pending: 250,
+                        averageScore: 78.5
+                    }
+                };
+                
+                updateDashboard();
+                loadRecentActivities();
+                
+            }, 1000);
+        }
+        
+        // Update dashboard with new data
+        function updateDashboard() {
+            // Update student stats
+            document.getElementById('totalStudents').textContent = dashboardData.students.total.toLocaleString();
+            document.getElementById('newApplications').textContent = dashboardData.students.newApplications;
+            document.getElementById('approvedStudents').textContent = dashboardData.students.approved;
+            document.getElementById('pendingReviews').textContent = dashboardData.students.pending;
+            
+            // Update finance stats
+            document.getElementById('totalFeeDue').textContent = '₹' + dashboardData.finance.totalDue.toLocaleString();
+            document.getElementById('paidAmount').textContent = '₹' + dashboardData.finance.paid.toLocaleString();
+            document.getElementById('pendingAmount').textContent = '₹' + dashboardData.finance.pending.toLocaleString();
+            document.getElementById('overdueAmount').textContent = '₹' + dashboardData.finance.overdue.toLocaleString();
+            
+            // Update hostel stats
+            document.getElementById('totalCapacity').textContent = dashboardData.hostel.capacity;
+            document.getElementById('occupiedRooms').textContent = dashboardData.hostel.occupied;
+            document.getElementById('availableRooms').textContent = dashboardData.hostel.available;
+            document.getElementById('occupancyRate').textContent = dashboardData.hostel.occupancyRate + '%';
+            
+            // Update examination stats
+            document.getElementById('totalExams').textContent = dashboardData.examinations.total;
+            document.getElementById('completedExams').textContent = dashboardData.examinations.completed;
+            document.getElementById('pendingExams').textContent = dashboardData.examinations.pending;
+            document.getElementById('averageScore').textContent = dashboardData.examinations.averageScore + '%';
+            
+            // Update last updated time
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+        }
+        
+        // Load recent activities
+        function loadRecentActivities() {
+            const activities = [
+                {
+                    type: 'student',
+                    icon: '🎓',
+                    title: 'New Student Application',
+                    description: 'John Doe submitted application for Computer Science',
+                    time: '2 minutes ago'
+                },
+                {
+                    type: 'finance',
+                    icon: '💰',
+                    title: 'Fee Payment Received',
+                    description: 'Payment of ₹75,000 received from Student ID: STU2401CS0001',
+                    time: '5 minutes ago'
+                },
+                {
+                    type: 'hostel',
+                    icon: '🏠',
+                    title: 'Hostel Allocation',
+                    description: 'Room A101 allocated to Student ID: STU2401BA0002',
+                    time: '10 minutes ago'
+                },
+                {
+                    type: 'exam',
+                    icon: '📚',
+                    title: 'Exam Results Published',
+                    description: 'Mathematics exam results published for Semester 1',
+                    time: '15 minutes ago'
+                },
+                {
+                    type: 'student',
+                    icon: '🎓',
+                    title: 'Application Approved',
+                    description: 'Application approved for Student ID: STU2401EN0003',
+                    time: '20 minutes ago'
+                },
+                {
+                    type: 'finance',
+                    icon: '💰',
+                    title: 'Receipt Generated',
+                    description: 'Fee receipt generated for Student ID: STU2401CS0004',
+                    time: '25 minutes ago'
+                }
+            ];
+            
+            const container = document.getElementById('recentActivities');
+            container.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon ${activity.type}">${activity.icon}</div>
+                    <div class="activity-content">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-description">${activity.description}</div>
+                    </div>
+                    <div class="activity-time">${activity.time}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Refresh dashboard
+        function refreshDashboard() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            refreshBtn.style.transform = 'rotate(180deg)';
+            
+            setTimeout(() => {
+                loadDashboardData();
+                refreshBtn.style.transform = 'rotate(0deg)';
+            }, 500);
+        }
+        
+        // Navigation functions
+        function viewStudents() {
+            alert('Opening Student Management Portal...');
+        }
+        
+        function processApplications() {
+            alert('Opening Application Processing Portal...');
+        }
+        
+        function viewFinance() {
+            alert('Opening Financial Management Portal...');
+        }
+        
+        function generateReceipts() {
+            alert('Generating fee receipts...');
+        }
+        
+        function viewHostel() {
+            alert('Opening Hostel Management Portal...');
+        }
+        
+        function allocateRooms() {
+            alert('Opening Room Allocation Portal...');
+        }
+        
+        function viewExaminations() {
+            alert('Opening Examination Management Portal...');
+        }
+        
+        function generateTranscripts() {
+            alert('Generating student transcripts...');
+        }
+        
+        // Quick actions
+        function quickAction(action) {
+            const actions = {
+                admission: 'Opening Admission Processing...',
+                fee: 'Opening Fee Collection Portal...',
+                hostel: 'Opening Hostel Allocation...',
+                exam: 'Opening Exam Scheduling...',
+                report: 'Generating Institutional Report...',
+                notification: 'Opening Notification Center...',
+                backup: 'Creating System Backup...',
+                settings: 'Opening System Settings...'
+            };
+            
+            alert(actions[action] || 'Action not available');
+        }
+        
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadDashboardData();
+        }, 30000);
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+        
+        // Add some interactivity to cards
+        document.querySelectorAll('.dashboard-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('.card-title').textContent;
+                alert(`Opening ${title} Portal...`);
+            });
+        });
+        
+        // Add hover effects to action items
+        document.querySelectorAll('.action-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

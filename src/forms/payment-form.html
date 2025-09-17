@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Payment Portal - College ERP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #34a853 0%, #2d8f47 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .search-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .search-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #34a853;
+            box-shadow: 0 0 0 3px rgba(52, 168, 83, 0.1);
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, #34a853 0%, #2d8f47 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 168, 83, 0.3);
+        }
+        
+        .fee-details {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .fee-details.show {
+            display: block;
+        }
+        
+        .fee-breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .fee-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .fee-item.total {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #34a853;
+            border-top: 2px solid #34a853;
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+        
+        .payment-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            display: none;
+        }
+        
+        .payment-section.show {
+            display: block;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .payment-method {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            border-color: #34a853;
+            background: #f8fff8;
+        }
+        
+        .payment-method.selected {
+            border-color: #34a853;
+            background: #e8f5e8;
+        }
+        
+        .payment-method img {
+            width: 60px;
+            height: 40px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .payment-form {
+            display: none;
+        }
+        
+        .payment-form.show {
+            display: block;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #34a853 0%, #2d8f47 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 168, 83, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #34a853;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .fee-breakdown {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 Fee Payment Portal</h1>
+            <p>Secure and convenient fee payment for students</p>
+        </div>
+        
+        <div class="content">
+            <div class="alert" id="alert"></div>
+            
+            <!-- Search Section -->
+            <div class="search-section">
+                <h3>🔍 Find Your Fee Details</h3>
+                <form id="searchForm" onsubmit="searchFeeDetails(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentId">Student ID <span style="color: #e74c3c;">*</span></label>
+                            <input type="text" id="studentId" name="studentId" required placeholder="Enter your Student ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address <span style="color: #e74c3c;">*</span></label>
+                            <input type="email" id="email" name="email" required placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <button type="submit" class="search-btn">Search Fee Details</button>
+                </form>
+            </div>
+            
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Searching fee details...</p>
+            </div>
+            
+            <!-- Fee Details -->
+            <div class="fee-details" id="feeDetails">
+                <h3>💰 Fee Breakdown</h3>
+                <div class="fee-breakdown" id="feeBreakdown">
+                    <!-- Fee items will be populated here -->
+                </div>
+                
+                <div class="fee-item total">
+                    <span>Total Amount Due:</span>
+                    <span id="totalAmount">₹0</span>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <strong>Due Date:</strong> <span id="dueDate">-</span><br>
+                    <strong>Fee ID:</strong> <span id="feeId">-</span>
+                </div>
+            </div>
+            
+            <!-- Payment Section -->
+            <div class="payment-section" id="paymentSection">
+                <h3>💳 Payment Methods</h3>
+                
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPaymentMethod('online')">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA2MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjQwIiByeD0iNCIgZmlsbD0iIzM0YTg1MyIvPgo8dGV4dCB4PSIzMCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk9ubGluZTwvdGV4dD4KPC9zdmc+" alt="Online Payment">
+                        <div>Online Payment</div>
+                        <small>Credit/Debit Card, UPI</small>
+                    </div>
+                    
+                    <div class="payment-method" onclick="selectPaymentMethod('bank')">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA2MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjQwIiByeD0iNCIgZmlsbD0iIzQyODVmNCIvPgo8dGV4dCB4PSIzMCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkJhbms8L3RleHQ+Cjwvc3ZnPg==" alt="Bank Transfer">
+                        <div>Bank Transfer</div>
+                        <small>NEFT/RTGS/IMPS</small>
+                    </div>
+                    
+                    <div class="payment-method" onclick="selectPaymentMethod('cash')">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA2MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjQwIiByeD0iNCIgZmlsbD0iI2ZiYmMwNCIvPgo8dGV4dCB4PSIzMCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNhc2g8L3RleHQ+Cjwvc3ZnPg==" alt="Cash Payment">
+                        <div>Cash Payment</div>
+                        <small>Visit Accounts Office</small>
+                    </div>
+                </div>
+                
+                <!-- Online Payment Form -->
+                <div class="payment-form" id="onlinePaymentForm">
+                    <h4>Online Payment Details</h4>
+                    <form id="onlinePaymentFormData" onsubmit="processOnlinePayment(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            <div class="form-group">
+                                <label for="expiryDate">Expiry Date</label>
+                                <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" maxlength="5">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="cardholderName">Cardholder Name</label>
+                                <input type="text" id="cardholderName" name="cardholderName" placeholder="John Doe">
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">Pay Now</button>
+                    </form>
+                </div>
+                
+                <!-- Bank Transfer Form -->
+                <div class="payment-form" id="bankPaymentForm">
+                    <h4>Bank Transfer Details</h4>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <h5>Bank Details:</h5>
+                        <p><strong>Bank Name:</strong> State Bank of India</p>
+                        <p><strong>Account Name:</strong> Educational Institution</p>
+                        <p><strong>Account Number:</strong> 1234567890123456</p>
+                        <p><strong>IFSC Code:</strong> SBIN0001234</p>
+                        <p><strong>Branch:</strong> Main Branch, City</p>
+                    </div>
+                    <form id="bankPaymentFormData" onsubmit="processBankPayment(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transactionId">Transaction ID/Reference Number</label>
+                                <input type="text" id="transactionId" name="transactionId" required placeholder="Enter transaction reference">
+                            </div>
+                            <div class="form-group">
+                                <label for="bankName">Your Bank Name</label>
+                                <input type="text" id="bankName" name="bankName" required placeholder="Enter your bank name">
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">Confirm Payment</button>
+                    </form>
+                </div>
+                
+                <!-- Cash Payment Form -->
+                <div class="payment-form" id="cashPaymentForm">
+                    <h4>Cash Payment Confirmation</h4>
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <h5>Instructions:</h5>
+                        <p>1. Visit the Accounts Office during working hours (9 AM - 5 PM)</p>
+                        <p>2. Bring this fee slip and your Student ID</p>
+                        <p>3. Pay the exact amount in cash</p>
+                        <p>4. Collect your receipt immediately</p>
+                    </div>
+                    <form id="cashPaymentFormData" onsubmit="processCashPayment(event)">
+                        <div class="form-group">
+                            <label for="paymentDate">Expected Payment Date</label>
+                            <input type="date" id="paymentDate" name="paymentDate" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Confirm Cash Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentFeeData = null;
+        let selectedPaymentMethod = null;
+        
+        // Search fee details
+        function searchFeeDetails(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const studentId = formData.get('studentId');
+            const email = formData.get('email');
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('feeDetails').classList.remove('show');
+            document.getElementById('paymentSection').classList.remove('show');
+            
+            // Simulate API call (replace with actual Google Apps Script endpoint)
+            setTimeout(() => {
+                // Mock fee data
+                const feeData = {
+                    feeId: 'FEE' + Date.now(),
+                    studentId: studentId,
+                    studentName: 'John Doe',
+                    course: 'Computer Science',
+                    academicYear: '2024-25',
+                    feeBreakdown: {
+                        tuition: 50000,
+                        hostel: 15000,
+                        library: 2000,
+                        lab: 5000,
+                        exam: 3000
+                    },
+                    totalAmount: 75000,
+                    dueDate: '2024-02-15',
+                    paymentStatus: 'Pending'
+                };
+                
+                currentFeeData = feeData;
+                displayFeeDetails(feeData);
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                
+            }, 2000);
+        }
+        
+        // Display fee details
+        function displayFeeDetails(feeData) {
+            const feeBreakdown = document.getElementById('feeBreakdown');
+            const totalAmount = document.getElementById('totalAmount');
+            const dueDate = document.getElementById('dueDate');
+            const feeId = document.getElementById('feeId');
+            
+            // Populate fee breakdown
+            feeBreakdown.innerHTML = `
+                <div class="fee-item">
+                    <span>Tuition Fee</span>
+                    <span>₹${feeData.feeBreakdown.tuition.toLocaleString()}</span>
+                </div>
+                <div class="fee-item">
+                    <span>Hostel Fee</span>
+                    <span>₹${feeData.feeBreakdown.hostel.toLocaleString()}</span>
+                </div>
+                <div class="fee-item">
+                    <span>Library Fee</span>
+                    <span>₹${feeData.feeBreakdown.library.toLocaleString()}</span>
+                </div>
+                <div class="fee-item">
+                    <span>Lab Fee</span>
+                    <span>₹${feeData.feeBreakdown.lab.toLocaleString()}</span>
+                </div>
+                <div class="fee-item">
+                    <span>Examination Fee</span>
+                    <span>₹${feeData.feeBreakdown.exam.toLocaleString()}</span>
+                </div>
+            `;
+            
+            totalAmount.textContent = '₹' + feeData.totalAmount.toLocaleString();
+            dueDate.textContent = new Date(feeData.dueDate).toLocaleDateString();
+            feeId.textContent = feeData.feeId;
+            
+            // Show fee details and payment section
+            document.getElementById('feeDetails').classList.add('show');
+            document.getElementById('paymentSection').classList.add('show');
+        }
+        
+        // Select payment method
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Remove selected class from all methods
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked method
+            event.target.closest('.payment-method').classList.add('selected');
+            
+            // Hide all payment forms
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.classList.remove('show');
+            });
+            
+            // Show selected payment form
+            document.getElementById(method + 'PaymentForm').classList.add('show');
+        }
+        
+        // Process online payment
+        function processOnlinePayment(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const paymentData = {
+                method: 'Online',
+                cardNumber: formData.get('cardNumber'),
+                expiryDate: formData.get('expiryDate'),
+                cvv: formData.get('cvv'),
+                cardholderName: formData.get('cardholderName'),
+                transactionId: 'TXN' + Date.now()
+            };
+            
+            processPayment(paymentData);
+        }
+        
+        // Process bank payment
+        function processBankPayment(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const paymentData = {
+                method: 'Bank Transfer',
+                transactionId: formData.get('transactionId'),
+                bankName: formData.get('bankName')
+            };
+            
+            processPayment(paymentData);
+        }
+        
+        // Process cash payment
+        function processCashPayment(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const paymentData = {
+                method: 'Cash',
+                paymentDate: formData.get('paymentDate'),
+                transactionId: 'CASH' + Date.now()
+            };
+            
+            processPayment(paymentData);
+        }
+        
+        // Process payment
+        function processPayment(paymentData) {
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // In real implementation, this would call Google Apps Script
+                console.log('Processing payment:', paymentData);
+                
+                showAlert('Payment processed successfully! Receipt will be sent to your email.', 'success');
+                
+                // Reset form
+                document.getElementById('searchForm').reset();
+                document.getElementById('feeDetails').classList.remove('show');
+                document.getElementById('paymentSection').classList.remove('show');
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Pay Now';
+                
+            }, 3000);
+        }
+        
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Format card number input
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+        
+        // Format expiry date input
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+        
+        // Format CVV input
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+</body>
+</html>

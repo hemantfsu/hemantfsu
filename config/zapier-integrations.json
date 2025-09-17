@@ -1,0 +1,234 @@
+{
+  "zapier_integrations": {
+    "description": "Zapier integration configurations for Educational Institution ERP",
+    "version": "1.0.0",
+    "integrations": [
+      {
+        "name": "New Student Application to Slack",
+        "description": "Send Slack notification when new student application is submitted",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "New Spreadsheet Row",
+          "sheet": "StudentDatabase",
+          "conditions": {
+            "status": "Pending Review"
+          }
+        },
+        "action": {
+          "app": "Slack",
+          "event": "Send Channel Message",
+          "channel": "#admissions",
+          "message_template": "🎓 New student application received!\n\nStudent: {{firstName}} {{lastName}}\nCourse: {{course}}\nEmail: {{email}}\nStudent ID: {{studentId}}\n\nPlease review in the ERP system."
+        }
+      },
+      {
+        "name": "Payment Received to Email",
+        "description": "Send email confirmation when fee payment is received",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "Updated Spreadsheet Row",
+          "sheet": "FeeCollection",
+          "conditions": {
+            "paymentStatus": "Paid"
+          }
+        },
+        "action": {
+          "app": "Gmail",
+          "event": "Send Email",
+          "to": "{{studentEmail}}",
+          "subject": "Payment Confirmation - {{studentId}}",
+          "body_template": "Dear {{studentName}},\n\nYour payment of ₹{{feeAmount}} has been received successfully.\n\nPayment Details:\n- Student ID: {{studentId}}\n- Receipt Number: {{receiptNumber}}\n- Payment Date: {{paymentDate}}\n- Payment Method: {{paymentMethod}}\n\nThank you for your payment!\n\nBest regards,\nAccounts Team"
+        }
+      },
+      {
+        "name": "Hostel Allocation to Teams",
+        "description": "Send Teams notification when hostel is allocated",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "New Spreadsheet Row",
+          "sheet": "HostelManagement",
+          "conditions": {
+            "allocationStatus": "Allocated"
+          }
+        },
+        "action": {
+          "app": "Microsoft Teams",
+          "event": "Send Message",
+          "channel": "Hostel Management",
+          "message_template": "🏠 Hostel allocated!\n\nStudent: {{studentName}}\nRoom: {{roomNumber}}\nType: {{hostelType}}\nMonthly Rent: ₹{{monthlyRent}}\n\nPlease contact the student for check-in details."
+        }
+      },
+      {
+        "name": "Exam Results to Discord",
+        "description": "Send Discord notification when exam results are published",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "New Spreadsheet Row",
+          "sheet": "ExaminationRecords",
+          "conditions": {
+            "resultStatus": "Pass"
+          }
+        },
+        "action": {
+          "app": "Discord",
+          "event": "Send Message",
+          "channel": "exam-results",
+          "message_template": "📚 Exam result published!\n\nStudent: {{studentName}}\nSubject: {{subject}}\nGrade: {{grade}}\nMarks: {{marksObtained}}/{{totalMarks}}\n\nCongratulations on passing!"
+        }
+      },
+      {
+        "name": "Overdue Payment Alert",
+        "description": "Send alert when payment becomes overdue",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "Updated Spreadsheet Row",
+          "sheet": "FeeCollection",
+          "conditions": {
+            "paymentStatus": "Overdue"
+          }
+        },
+        "action": {
+          "app": "Gmail",
+          "event": "Send Email",
+          "to": "{{studentEmail}}",
+          "subject": "Payment Overdue - {{studentId}}",
+          "body_template": "Dear {{studentName}},\n\nYour fee payment is now overdue.\n\nPayment Details:\n- Student ID: {{studentId}}\n- Amount Due: ₹{{feeAmount}}\n- Due Date: {{dueDate}}\n- Late Fee: ₹{{lateFee}}\n\nPlease make payment immediately to avoid further penalties.\n\nBest regards,\nAccounts Team"
+        }
+      },
+      {
+        "name": "Application Approved to WhatsApp",
+        "description": "Send WhatsApp message when application is approved",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "Updated Spreadsheet Row",
+          "sheet": "StudentDatabase",
+          "conditions": {
+            "status": "Approved"
+          }
+        },
+        "action": {
+          "app": "WhatsApp Business",
+          "event": "Send Message",
+          "to": "{{phone}}",
+          "message_template": "🎉 Congratulations {{firstName}}!\n\nYour admission application has been approved!\n\nStudent ID: {{studentId}}\nCourse: {{course}}\n\nNext steps:\n1. Complete fee payment\n2. Submit required documents\n3. Attend orientation\n\nWelcome to our institution!"
+        }
+      },
+      {
+        "name": "Daily Report to Email",
+        "description": "Send daily summary report to administrators",
+        "trigger": {
+          "app": "Schedule",
+          "event": "Every Day at 6:00 PM"
+        },
+        "action": {
+          "app": "Gmail",
+          "event": "Send Email",
+          "to": "admin@college.edu",
+          "subject": "Daily ERP Report - {{date}}",
+          "body_template": "Daily ERP System Report\n\nDate: {{date}}\n\n📊 Statistics:\n- New Applications: {{newApplications}}\n- Payments Received: {{paymentsReceived}}\n- Hostel Occupancy: {{hostelOccupancy}}%\n- Exam Results: {{examResults}}\n\n🔧 System Status: {{systemHealth}}\n\nReport generated automatically by ERP system."
+        }
+      },
+      {
+        "name": "Backup Completion Alert",
+        "description": "Send notification when daily backup is completed",
+        "trigger": {
+          "app": "Google Drive",
+          "event": "New File",
+          "folder": "ERP_Backups",
+          "conditions": {
+            "filename_contains": "ERP_Backup"
+          }
+        },
+        "action": {
+          "app": "Slack",
+          "event": "Send Channel Message",
+          "channel": "#system-alerts",
+          "message_template": "✅ Daily backup completed successfully!\n\nFile: {{filename}}\nSize: {{fileSize}}\nTime: {{timestamp}}\n\nSystem data is safely backed up."
+        }
+      },
+      {
+        "name": "Security Alert to Teams",
+        "description": "Send security alert when suspicious activity is detected",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "New Spreadsheet Row",
+          "sheet": "AuditLog",
+          "conditions": {
+            "action": "PERMISSION_DENIED"
+          }
+        },
+        "action": {
+          "app": "Microsoft Teams",
+          "event": "Send Message",
+          "channel": "Security Alerts",
+          "message_template": "🚨 Security Alert!\n\nAction: {{action}}\nUser: {{userId}}\nTime: {{timestamp}}\nIP: {{ipAddress}}\n\nUnauthorized access attempt detected. Please investigate."
+        }
+      },
+      {
+        "name": "Hostel Check-in to SMS",
+        "description": "Send SMS notification when student checks into hostel",
+        "trigger": {
+          "app": "Google Sheets",
+          "event": "Updated Spreadsheet Row",
+          "sheet": "HostelManagement",
+          "conditions": {
+            "allocationStatus": "Checked In"
+          }
+        },
+        "action": {
+          "app": "Twilio",
+          "event": "Send SMS",
+          "to": "{{phone}}",
+          "message_template": "Welcome to the hostel {{studentName}}! You have successfully checked into Room {{roomNumber}}. Hostel rules and regulations have been sent to your email. Enjoy your stay!"
+        }
+      }
+    ],
+    "webhook_endpoints": {
+      "admission_webhook": {
+        "url": "https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/",
+        "description": "Webhook for admission form submissions",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer YOUR_API_KEY"
+        }
+      },
+      "payment_webhook": {
+        "url": "https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/",
+        "description": "Webhook for payment processing",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer YOUR_API_KEY"
+        }
+      },
+      "hostel_webhook": {
+        "url": "https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/",
+        "description": "Webhook for hostel management",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer YOUR_API_KEY"
+        }
+      }
+    },
+    "setup_instructions": {
+      "step1": "Create Zapier account and connect Google Sheets",
+      "step2": "Set up Google Sheets triggers for each ERP sheet",
+      "step3": "Configure action apps (Slack, Teams, Discord, Gmail, etc.)",
+      "step4": "Test each integration with sample data",
+      "step5": "Enable all zaps and monitor for errors",
+      "step6": "Set up webhook endpoints for real-time notifications"
+    },
+    "monitoring": {
+      "check_frequency": "Daily",
+      "error_notification": "admin@college.edu",
+      "performance_metrics": [
+        "Integration success rate",
+        "Response time",
+        "Error count",
+        "Data accuracy"
+      ]
+    }
+  }
+}
